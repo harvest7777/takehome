@@ -30,6 +30,33 @@ when assigning judges, we should be able to edit the question and check off some
 this just becomes a parsing problem
 
 
+---==+ parser
+should i normalize the data into columns?
+lets think through about this
+
+the user should be able to choose what fields are inclued in the prompt
+fields look pretty dynamic. there can be many questiuons per submission
+but we want to choose judge per question
+
+we shoudl at the ery least include the question and answer in the prompt
+
+the issue is we dont know what other fields there are
+
+lets store each question answer object for sure
+
+dont want it to be super slow
+but it doesnhave to be persistent
+so how about this. 
+
+when we assign jduges, we auto store in mthe db
+
+when displaying the tasks, we literally go throught he whole file
+
+^ this has some design implications though if its a big file it might be cooked
+but the godo thing is all we care about is the judges, and this lets us work with toe original shape of the data which is good
+queueing a job will be very fast
+we can just store the list of metadata?
+for every parsed submission we must jsut store the questino and asnswer
 
 ---==+ running judges
 - have some backend endpoint that takes the 

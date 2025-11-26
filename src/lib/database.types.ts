@@ -61,6 +61,85 @@ export type Database = {
         }
         Relationships: []
       }
+      answers: {
+        Row: {
+          answer_data: Json
+          created_at: string
+          question_id: string
+          submission_id: string
+        }
+        Insert: {
+          answer_data: Json
+          created_at?: string
+          question_id: string
+          submission_id: string
+        }
+        Update: {
+          answer_data?: Json
+          created_at?: string
+          question_id?: string
+          submission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "answers_question_judging_statuses_fk"
+            columns: ["question_id", "submission_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["question_id", "submission_id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          created_at: string
+          question_data: Json
+          question_id: string
+          status: Database["public"]["Enums"]["judging_status"]
+          submission_id: string
+        }
+        Insert: {
+          created_at?: string
+          question_data: Json
+          question_id: string
+          status?: Database["public"]["Enums"]["judging_status"]
+          submission_id: string
+        }
+        Update: {
+          created_at?: string
+          question_data?: Json
+          question_id?: string
+          status?: Database["public"]["Enums"]["judging_status"]
+          submission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "judging_statuses_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submissions: {
+        Row: {
+          created_at: string
+          id: string
+          queue_id: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          queue_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          queue_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

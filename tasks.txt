@@ -1,3 +1,13 @@
 ---==+ setup
 [x] local supabase
-[] supabase schema
+[x] supabase schema
+
+---==+ db crud for agents
+[x] create
+[x] read 
+[x] update 
+[x] delete 
+
+---==+ parser
+jsonb or store the file?
+lets think through about this

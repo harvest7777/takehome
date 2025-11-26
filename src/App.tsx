@@ -1,4 +1,3 @@
-import "./App.css";
 import { CreateAgentButton } from "./_agents/create-agent";
 
 function App() {

@@ -7,5 +7,6 @@ declare global {
   type JudgeEvaluation = PublicSchema['Enums']['judge_evaluation']
   type JudgingStatus = PublicSchema['Enums']['judging_status']
   type LLMModel = PublicSchema['Enums']['llm_model']
+  type Agent = PublicSchema['Tables']['agent_configurations']['Row']
 }
 

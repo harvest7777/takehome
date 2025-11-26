@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { EditAgentButton } from "./edit-agent";
 
 interface AgentCardProps {
   agent: Agent;
@@ -22,6 +23,7 @@ export function AgentCard({ agent, className }: AgentCardProps) {
             >
               {agent.is_active ? "Active" : "Inactive"}
             </div>
+            <EditAgentButton agent={agent} />
           </div>
           <p className="text-xs text-muted-foreground mb-2">{agent.model}</p>
           <p className="text-xs text-muted-foreground line-clamp-2">

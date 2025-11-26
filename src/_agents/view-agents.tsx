@@ -1,33 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
 import { AgentCard } from "./agent-card";
-
-async function fetchAgents(): Promise<Agent[]> {
-  const { data, error } = await supabase
-    .from("agent_configurations")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    throw new Error(`Failed to fetch agents: ${error.message}`);
-  }
-
-  return data;
-}
+import { useAgents } from "./use-agents";
 
 interface ViewAgentsProps {
   className?: string;
 }
 
 export function ViewAgents({ className }: ViewAgentsProps) {
-  const {
-    data: agents,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["agents"],
-    queryFn: fetchAgents,
-  });
+  const { data: agents, isLoading, error } = useAgents();
 
   if (isLoading) {
     return (

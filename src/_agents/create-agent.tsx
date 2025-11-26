@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { supabase } from "@/lib/supabase";
+import { useCreateAgent } from "./use-agents";
 
 const llmModels: LLMModel[] = [
   "gpt-4o-mini",
@@ -57,7 +57,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function CreateAgentButton() {
   const [open, setOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const createAgent = useCreateAgent();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -69,33 +69,13 @@ export function CreateAgentButton() {
     },
   });
 
-  const onSubmit = async (values: FormValues) => {
-    setIsSubmitting(true);
-    try {
-      const { data, error } = await supabase
-        .from("agent_configurations")
-        .insert({
-          name: values.name,
-          model: values.model,
-          is_active: values.is_active,
-          rubric: values.rubric,
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error("Error creating agent:", error);
-        return;
-      }
-
-      console.log("Agent created successfully:", data);
-      form.reset();
-      setOpen(false);
-    } catch (error) {
-      console.error("Unexpected error:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const onSubmit = (values: FormValues) => {
+    createAgent.mutate(values, {
+      onSuccess: () => {
+        form.reset();
+        setOpen(false);
+      },
+    });
   };
 
   return (
@@ -209,12 +189,12 @@ export function CreateAgentButton() {
                   form.reset();
                   setOpen(false);
                 }}
-                disabled={isSubmitting}
+                disabled={createAgent.isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create Agent"}
+              <Button type="submit" disabled={createAgent.isPending}>
+                {createAgent.isPending ? "Creating..." : "Create Agent"}
               </Button>
             </DialogFooter>
           </form>

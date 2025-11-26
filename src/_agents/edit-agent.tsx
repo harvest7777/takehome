@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Pencil } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,7 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { supabase } from "@/lib/supabase";
+import { useUpdateAgent } from "./use-agents";
 
 const llmModels: LLMModel[] = [
   "gpt-4o-mini",
@@ -60,29 +59,9 @@ interface EditAgentButtonProps {
   agent: Agent;
 }
 
-async function updateAgent(id: number, values: FormValues): Promise<Agent> {
-  const { data, error } = await supabase
-    .from("agent_configurations")
-    .update({
-      name: values.name,
-      model: values.model,
-      is_active: values.is_active,
-      rubric: values.rubric,
-    })
-    .eq("id", id)
-    .select()
-    .single();
-
-  if (error) {
-    throw new Error(`Failed to update agent: ${error.message}`);
-  }
-
-  return data;
-}
-
 export function EditAgentButton({ agent }: EditAgentButtonProps) {
   const [open, setOpen] = useState(false);
-  const queryClient = useQueryClient();
+  const updateAgent = useUpdateAgent();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -106,50 +85,16 @@ export function EditAgentButton({ agent }: EditAgentButtonProps) {
     }
   }, [agent, open, form]);
 
-  const mutation = useMutation({
-    mutationFn: (values: FormValues) => updateAgent(agent.id, values),
-    onMutate: async (newValues) => {
-      // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ["agents"] });
-
-      // Snapshot the previous value
-      const previousAgents = queryClient.getQueryData<Agent[]>(["agents"]);
-
-      // Optimistically update to the new value
-      if (previousAgents) {
-        queryClient.setQueryData<Agent[]>(["agents"], (old) => {
-          if (!old) return old;
-          return old.map((a) =>
-            a.id === agent.id
-              ? {
-                  ...a,
-                  ...newValues,
-                }
-              : a
-          );
-        });
-      }
-
-      return { previousAgents };
-    },
-    onError: (_, __, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
-      if (context?.previousAgents) {
-        queryClient.setQueryData(["agents"], context.previousAgents);
-      }
-    },
-    onSettled: () => {
-      // Always refetch after error or success
-      queryClient.invalidateQueries({ queryKey: ["agents"] });
-    },
-    onSuccess: () => {
-      form.reset();
-      setOpen(false);
-    },
-  });
-
   const onSubmit = (values: FormValues) => {
-    mutation.mutate(values);
+    updateAgent.mutate(
+      { id: agent.id, values },
+      {
+        onSuccess: () => {
+          form.reset();
+          setOpen(false);
+        },
+      }
+    );
   };
 
   return (
@@ -262,12 +207,12 @@ export function EditAgentButton({ agent }: EditAgentButtonProps) {
                   form.reset();
                   setOpen(false);
                 }}
-                disabled={mutation.isPending}
+                disabled={updateAgent.isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? "Updating..." : "Update Agent"}
+              <Button type="submit" disabled={updateAgent.isPending}>
+                {updateAgent.isPending ? "Updating..." : "Update Agent"}
               </Button>
             </DialogFooter>
           </form>

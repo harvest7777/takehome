@@ -1,0 +1,38 @@
+xxxXXX understanding problem 30m
+
+---==+ agent selection
+- choose a llm provider
+- each judge has a status
+- users can CRUD
+{}
+- name
+- system prompt
+- target model name (just like 4o mini or smth)
+- active flag
+
+---==+ assigning judges
+- assign judger PER question PER queue
+  - for each queue, should have quick way to assign judges to each q
+  - needs to be persisted
+  - how do we uniquely identify a q?
+    - by id, q_template
+  - how do we uniquely identify an ans?
+    - id, q_template 
+- saved on assignment
+
+^ what about allowing which fields are included in prompt?
+to make this scalable what should we do?
+i dont think we should split the data up, if more fields are added in the future it will be hard to maintain
+
+what if we just store the whole json for q/a
+when assigning judges, we should be able to edit the question and check off some thing to include in prompt
+
+this just becomes a parsing problem
+
+
+
+---==+ running judges
+- have some backend endpoint that takes the 
+  - quesetion, answer, prompt
+  - evaluates and returns pass/fail/inc
+

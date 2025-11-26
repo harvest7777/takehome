@@ -1,2 +1,3 @@
 ---==+ setup
-[] local supabase
+[x] local supabase
+[] supabase schema

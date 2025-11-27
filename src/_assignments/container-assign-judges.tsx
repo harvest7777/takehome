@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQueues } from "./use-queues";
-import { DisplayQuestionsInQueue } from "./display-questions-in-queue";
+import { ManageJudgesPerQuestionInQueue } from "./display-questions-in-queue";
 import {
   Select,
   SelectContent,
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
-export function AssignJudges() {
+export function ContainerAssignJudges() {
   const { data: queues, isLoading, error } = useQueues();
   const [selectedQueue, setSelectedQueue] = useState<string>("");
 
@@ -66,7 +66,7 @@ export function AssignJudges() {
           <p className="text-sm font-medium mb-2">
             Selected Queue: {selectedQueue}
           </p>
-          <DisplayQuestionsInQueue queueId={selectedQueue} />
+          <ManageJudgesPerQuestionInQueue queueId={selectedQueue} />
         </div>
       )}
     </div>

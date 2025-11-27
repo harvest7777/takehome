@@ -1,15 +1,21 @@
 import { QuestionCard } from "./question-card";
 import { useQuestionsInQueue } from "./use-questions-in-queue";
+import { useAgents } from "@/_agents/use-agents";
+import { AgentCard } from "@/_agents/agent-card";
 
-interface DisplayQuestionsInQueueProps {
+interface ManageJudgesPerQuestionInQueueProps {
   queueId: string | null;
 }
 
-export function DisplayQuestionsInQueue({
+export function ManageJudgesPerQuestionInQueue({
   queueId,
-}: DisplayQuestionsInQueueProps) {
+}: ManageJudgesPerQuestionInQueueProps) {
   const { data: questions, isLoading, error } = useQuestionsInQueue(queueId);
-
+  const {
+    data: judges,
+    isLoading: isLoadingJudges,
+    error: errorJudges,
+  } = useAgents();
   if (!queueId) {
     return (
       <div className="p-4">
@@ -51,6 +57,12 @@ export function DisplayQuestionsInQueue({
 
   return (
     <div className="space-y-4">
+      {/* List the judges */}
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {judges?.map((judge) => (
+          <AgentCard key={judge.id} agent={judge} />
+        ))}
+      </div>
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">
           Questions ({questions.length})

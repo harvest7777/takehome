@@ -1,14 +1,15 @@
 import { CreateAgentButton } from "./_agents/create-agent";
 import { ViewAgents } from "./_agents/view-agents";
+import { AssignJudges } from "./_assignments/assign-judges";
 import { UploadFileButton } from "./_parser/upload-file";
 
 function App() {
   return (
     <>
-      <div>Hi</div>
-      <CreateAgentButton />
+      {/* <CreateAgentButton />
       <UploadFileButton />
-      <ViewAgents />
+      <ViewAgents /> */}
+      <AssignJudges />
     </>
   );
 }

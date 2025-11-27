@@ -8,6 +8,11 @@
 [x] update 
 [x] delete 
 
----==+ parser
-jsonb or store the file?
-lets think through about this
+---==+ poll from frontend
+
+
+---==+ assigning judges
+[] first hasv ethe user pick a submission
+[] aggregate data to show questions per queue
+
+

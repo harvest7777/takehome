@@ -63,7 +63,7 @@ export function UploadFileButton() {
             Cancel
           </Button>
           <Button onClick={handleUpload} disabled={isUploading}>
-            {isUploading ? "Uploading..." : "Upload"}
+            Upload
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -6,9 +6,10 @@ import { UploadFileButton } from "./_parser/upload-file";
 function App() {
   return (
     <>
-      {/* <CreateAgentButton />
-      <UploadFileButton />
+      {/* 
       <ViewAgents /> */}
+      <CreateAgentButton />
+      <UploadFileButton />
       <ContainerAssignJudges />
     </>
   );

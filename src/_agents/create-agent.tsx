@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -70,7 +71,15 @@ export function CreateAgentButton() {
   });
 
   const onSubmit = (values: FormValues) => {
-    createAgent.mutate(values, {
+    const newAgent: Agent = {
+      id: uuidv4(),
+      name: values.name,
+      model: values.model,
+      is_active: values.is_active,
+      rubric: values.rubric,
+      created_at: new Date().toISOString(),
+    };
+    createAgent.mutate(newAgent, {
       onSuccess: () => {
         form.reset();
         setOpen(false);

@@ -58,8 +58,9 @@ export async function parseQuestionsAndAnswersFromSubmission(submission: Submiss
     const answers = submission['answers'];
     for (const question of questions) {
         const storedQuestion: StoredQuestion = {
+            assigned_judge_id: null,
+            status: null,
             submission_id: submission.id,
-            status: 'QUEUED',
             question_id: question['data']['id'],
             question_data: JSON.stringify(question['data']),
             created_at: new Date().toISOString(),
@@ -67,7 +68,6 @@ export async function parseQuestionsAndAnswersFromSubmission(submission: Submiss
         const { error: questionError } = await supabase.from('questions').insert(storedQuestion);
         if (questionError) {
             console.warn(`Failed to insert question ${question['data']['id']}:`, questionError.message);
-            continue; // Skip this question and continue with next
         }
 
         const answer = answers[question['data']['id']];
@@ -112,5 +112,3 @@ export const jsonStringSubmission = `[
       }
     }
 }]`;
-
-parseQuestionsAndAnswersFromSubmission(JSON.parse(jsonStringSubmission));

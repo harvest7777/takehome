@@ -12,7 +12,16 @@
 
 
 ---==+ assigning judges
+design choice: front end polling
+- for simplicity and easier setup
+- if was in sqs or something youd have to set up sqs instead of just running everything locally
+
 [] first hasv ethe user pick a submission
 [] aggregate data to show questions per queue
+[] need to show which judge for which question
+[] when i assign a judge what happens?
+[] it shoudl go into the queue
+
+
 
 

@@ -62,12 +62,7 @@ export function ContainerAssignJudges() {
       </div>
 
       {selectedQueue && (
-        <div className="mt-4 p-4 border rounded-lg bg-card">
-          <p className="text-sm font-medium mb-2">
-            Selected Queue: {selectedQueue}
-          </p>
-          <ManageJudgesPerQuestionInQueue queueId={selectedQueue} />
-        </div>
+        <ManageJudgesPerQuestionInQueue queueId={selectedQueue} />
       )}
     </div>
   );

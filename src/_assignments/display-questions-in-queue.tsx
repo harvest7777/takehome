@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { QuestionCard } from "./question-card";
-import { useQuestionsInQueue } from "./use-questions-in-queue";
+import {
+  useAssignJudgeToQuestion,
+  useQuestionsInQueue,
+} from "./use-questions-in-queue";
 import { useAgents } from "@/_agents/use-agents";
 import { AgentCard } from "@/_agents/agent-card";
 import { cn } from "@/lib/utils";
@@ -15,6 +18,7 @@ export function ManageJudgesPerQuestionInQueue({
   const [selectedJudgeId, setSelectedJudgeId] = useState<string | null>(null);
   const { data: questions, isLoading, error } = useQuestionsInQueue(queueId);
   const { data: judges } = useAgents();
+  const { mutate: assignJudgeToQuestion } = useAssignJudgeToQuestion(queueId);
 
   const handleJudgeClick = (judgeId: string) => {
     if (selectedJudgeId === judgeId) {
@@ -28,9 +32,17 @@ export function ManageJudgesPerQuestionInQueue({
 
   const handleQuestionClick = (question: StoredQuestion) => {
     if (question.assigned_judge_id === selectedJudgeId) {
-      console.log("unassigning judge from question", question.question_id);
+      assignJudgeToQuestion({
+        questionId: question.question_id,
+        submissionId: question.submission_id,
+        judgeId: null,
+      });
     } else {
-      console.log("assigning judge to question");
+      assignJudgeToQuestion({
+        questionId: question.question_id,
+        submissionId: question.submission_id,
+        judgeId: selectedJudgeId,
+      });
     }
   };
   if (!queueId) {

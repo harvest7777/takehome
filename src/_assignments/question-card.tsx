@@ -43,7 +43,7 @@ export function QuestionCard({ question, className }: QuestionCardProps) {
             <div
               className={cn(
                 "rounded-full px-2 py-0.5 text-xs font-medium shrink-0",
-                getStatusColor(question.status)
+                getStatusColor(question.status as JudgingStatus)
               )}
             >
               {question.status}
@@ -58,6 +58,13 @@ export function QuestionCard({ question, className }: QuestionCardProps) {
         <div className="mt-3 pt-3 border-t">
           <p className="text-xs text-muted-foreground">
             Additional fields available
+          </p>
+        </div>
+      )}
+      {question.assigned_judge_id && (
+        <div className="mt-3 pt-3 border-t">
+          <p className="text-xs text-muted-foreground">
+            Assigned judge: {question.assigned_judge_id}
           </p>
         </div>
       )}

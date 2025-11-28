@@ -90,29 +90,72 @@ export type Database = {
           },
         ]
       }
+      question_judges: {
+        Row: {
+          created_at: string
+          id: number
+          judge_id: string | null
+          question_id: string | null
+          status: Database["public"]["Enums"]["judging_status"] | null
+          submission_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          judge_id?: string | null
+          question_id?: string | null
+          status?: Database["public"]["Enums"]["judging_status"] | null
+          submission_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          judge_id?: string | null
+          question_id?: string | null
+          status?: Database["public"]["Enums"]["judging_status"] | null
+          submission_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_judges_judge_id_fkey"
+            columns: ["judge_id"]
+            isOneToOne: false
+            referencedRelation: "agent_configurations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "question_judges_question_id_submission_id_fkey"
+            columns: ["question_id", "submission_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["question_id", "submission_id"]
+          },
+          {
+            foreignKeyName: "question_judges_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       questions: {
         Row: {
-          assigned_judge_id: string | null
           created_at: string
           question_data: Json
           question_id: string
-          status: Database["public"]["Enums"]["judging_status"] | null
           submission_id: string
         }
         Insert: {
-          assigned_judge_id?: string | null
           created_at?: string
           question_data: Json
           question_id: string
-          status?: Database["public"]["Enums"]["judging_status"] | null
           submission_id: string
         }
         Update: {
-          assigned_judge_id?: string | null
           created_at?: string
           question_data?: Json
           question_id?: string
-          status?: Database["public"]["Enums"]["judging_status"] | null
           submission_id?: string
         }
         Relationships: [
@@ -121,13 +164,6 @@ export type Database = {
             columns: ["submission_id"]
             isOneToOne: false
             referencedRelation: "submissions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "questions_assigned_judge_id_fkey"
-            columns: ["assigned_judge_id"]
-            isOneToOne: false
-            referencedRelation: "agent_configurations"
             referencedColumns: ["id"]
           },
         ]

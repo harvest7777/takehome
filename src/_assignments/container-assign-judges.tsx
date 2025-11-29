@@ -9,10 +9,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { useJudgesInQueue } from "./use-judges";
 
 export function ContainerAssignJudges() {
   const { data: queues, isLoading, error } = useQueues();
   const [selectedQueue, setSelectedQueue] = useState<string>("");
+
+  const {
+    data: judges,
+    isLoading: isLoadingJudges,
+    error: errorJudges,
+  } = useJudgesInQueue(selectedQueue);
 
   if (isLoading) {
     return (

@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { v4 } from "uuid";
 
 export type Submission = {
   id: string;
@@ -38,16 +39,16 @@ export async function parseInputJson(inputJson: string): Promise<void> {
 }
 
 export async function parseQuestionsAndAnswersFromSubmission(submission: Submission): Promise<void> {
-    const storedSubmission: StoredSubmission = {
-        id: submission.id,
-        queue_id: submission.queueId,
-        created_at: new Date(Number(submission.createdAt)).toISOString(),
-    };
-    
+    const surrogateSubmissionId = v4();
     // First store the submission to the db
     const { error: submissionError } = await supabase
         .from('submissions')
-        .insert(storedSubmission);
+        .insert({
+            surrogate_submission_id: surrogateSubmissionId,
+            id: submission.id,
+            queue_id: submission.queueId,
+            created_at: new Date(Number(submission.createdAt)).toISOString(),
+        });
 
     if (submissionError) {
         console.warn(`Failed to insert submission ${submission.id}:`, submissionError.message);
@@ -57,32 +58,25 @@ export async function parseQuestionsAndAnswersFromSubmission(submission: Submiss
     const questions = submission['questions'];
     const answers = submission['answers'];
     for (const question of questions) {
-        const storedQuestion: StoredQuestion = {
-            submission_id: submission.id,
-            question_id: question['data']['id'],
+        const surrogateQuestionId = v4();
+        const { error: questionError } = await supabase.from('questions').insert({
+            surrogate_submission_id: surrogateSubmissionId,
+            surrogate_question_id: surrogateQuestionId,
             question_data: JSON.stringify(question['data']),
             created_at: new Date().toISOString(),
-        }
-        const { error: questionError } = await supabase.from('questions').insert(storedQuestion);
+        });
         if (questionError) {
             console.warn(`Failed to insert question ${question['data']['id']}:`, questionError.message);
         }
 
         const answer = answers[question['data']['id']];
-        if (answer) {
-            const storedAnswer: StoredAnswer = {
-                question_id: question['data']['id'],
-                submission_id: submission.id,
-                answer_data: JSON.stringify(answer),
-                created_at: new Date().toISOString(),
-            };
-            const { error: answerError } = await supabase.from('answers').insert(storedAnswer);
-            if (answerError) {
-                console.warn(`Failed to insert answer for question ${question['data']['id']}:`, answerError.message);
-                // Continue with next question
-            }
-        } else {
-            console.warn(`No answer found for question ${question['data']['id']}`);
+        const { error: answerError } = await supabase.from('answers').insert({
+            surrogate_question_id: surrogateQuestionId,
+            answer_data: JSON.stringify(answer),
+            created_at: new Date().toISOString(),
+        });
+        if (answerError) {
+            console.warn(`Failed to insert answer for question ${question['data']['id']}:`, answerError.message);
         }
     }
 }

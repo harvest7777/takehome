@@ -64,56 +64,57 @@ export type Database = {
       answers: {
         Row: {
           answer_data: Json
-          created_at: string
-          question_id: string
-          submission_id: string
+          created_at: string | null
+          surrogate_question_id: string | null
+          surrogate_submission_id: string | null
         }
         Insert: {
           answer_data: Json
-          created_at?: string
-          question_id: string
-          submission_id: string
+          created_at?: string | null
+          surrogate_question_id?: string | null
+          surrogate_submission_id?: string | null
         }
         Update: {
           answer_data?: Json
-          created_at?: string
-          question_id?: string
-          submission_id?: string
+          created_at?: string | null
+          surrogate_question_id?: string | null
+          surrogate_submission_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "answers_question_id_submission_id_fkey"
-            columns: ["question_id", "submission_id"]
+            foreignKeyName: "answers_surrogate_question_id_fkey"
+            columns: ["surrogate_question_id"]
             isOneToOne: false
             referencedRelation: "questions"
-            referencedColumns: ["question_id", "submission_id"]
+            referencedColumns: ["surrogate_question_id"]
+          },
+          {
+            foreignKeyName: "answers_surrogate_submission_id_fkey"
+            columns: ["surrogate_submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["surrogate_submission_id"]
           },
         ]
       }
       question_judges: {
         Row: {
           created_at: string
-          id: number
           judge_id: string | null
-          question_id: string | null
           status: Database["public"]["Enums"]["judging_status"] | null
-          submission_id: string | null
+          surrogate_question_id: string
         }
         Insert: {
           created_at?: string
-          id?: number
           judge_id?: string | null
-          question_id?: string | null
           status?: Database["public"]["Enums"]["judging_status"] | null
-          submission_id?: string | null
+          surrogate_question_id: string
         }
         Update: {
           created_at?: string
-          id?: number
           judge_id?: string | null
-          question_id?: string | null
           status?: Database["public"]["Enums"]["judging_status"] | null
-          submission_id?: string | null
+          surrogate_question_id?: string
         }
         Relationships: [
           {
@@ -124,18 +125,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "question_judges_question_id_submission_id_fkey"
-            columns: ["question_id", "submission_id"]
+            foreignKeyName: "question_judges_surrogate_question_id_fkey"
+            columns: ["surrogate_question_id"]
             isOneToOne: false
             referencedRelation: "questions"
-            referencedColumns: ["question_id", "submission_id"]
-          },
-          {
-            foreignKeyName: "question_judges_submission_id_fkey"
-            columns: ["submission_id"]
-            isOneToOne: false
-            referencedRelation: "submissions"
-            referencedColumns: ["id"]
+            referencedColumns: ["surrogate_question_id"]
           },
         ]
       }
@@ -143,46 +137,38 @@ export type Database = {
         Row: {
           created_at: string
           question_data: Json
-          question_id: string
-          submission_id: string
+          surrogate_question_id: string
         }
         Insert: {
           created_at?: string
           question_data: Json
-          question_id: string
-          submission_id: string
+          surrogate_question_id: string
         }
         Update: {
           created_at?: string
           question_data?: Json
-          question_id?: string
-          submission_id?: string
+          surrogate_question_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "judging_statuses_submission_id_fkey"
-            columns: ["submission_id"]
-            isOneToOne: false
-            referencedRelation: "submissions"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       submissions: {
         Row: {
           created_at: string
           id: string
           queue_id: string
+          surrogate_submission_id: string | null
         }
         Insert: {
           created_at?: string
           id: string
           queue_id: string
+          surrogate_submission_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           queue_id?: string
+          surrogate_submission_id?: string | null
         }
         Relationships: []
       }
@@ -191,7 +177,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_question_judges_by_queue: {
+        Args: { queue_id_input: string }
+        Returns: {
+          created_at: string
+          id: number
+          judge_id: string
+          name: string
+          question_id: string
+          status: Database["public"]["Enums"]["judging_status"]
+          submission_id: string
+        }[]
+      }
+      get_questions_with_judges_by_queue: {
+        Args: { queue_id_input: string }
+        Returns: {
+          judges: Json
+          question_data: Json
+          question_id: string
+          submission_id: string
+        }[]
+      }
     }
     Enums: {
       judge_evaluation: "PASS" | "FAIL" | "INCONCLUSIVE"

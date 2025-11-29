@@ -9,36 +9,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { useJudgesInQueue } from "./use-judges";
 
 export function ContainerAssignJudges() {
-  const { data: queues, isLoading, error } = useQueues();
+  const { data: queues } = useQueues();
   const [selectedQueue, setSelectedQueue] = useState<string>("");
-
-  const {
-    data: judges,
-    isLoading: isLoadingJudges,
-    error: errorJudges,
-  } = useJudgesInQueue(selectedQueue);
-
-  if (isLoading) {
-    return (
-      <div className="p-4">
-        <p className="text-sm text-muted-foreground">Loading queues...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-4">
-        <p className="text-sm text-destructive">
-          Error loading queues:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
-        </p>
-      </div>
-    );
-  }
 
   if (!queues || queues.length === 0) {
     return (

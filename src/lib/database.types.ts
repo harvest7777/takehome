@@ -66,19 +66,16 @@ export type Database = {
           answer_data: Json
           created_at: string | null
           surrogate_question_id: string | null
-          surrogate_submission_id: string | null
         }
         Insert: {
           answer_data: Json
           created_at?: string | null
           surrogate_question_id?: string | null
-          surrogate_submission_id?: string | null
         }
         Update: {
           answer_data?: Json
           created_at?: string | null
           surrogate_question_id?: string | null
-          surrogate_submission_id?: string | null
         }
         Relationships: [
           {
@@ -87,13 +84,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "questions"
             referencedColumns: ["surrogate_question_id"]
-          },
-          {
-            foreignKeyName: "answers_surrogate_submission_id_fkey"
-            columns: ["surrogate_submission_id"]
-            isOneToOne: false
-            referencedRelation: "submissions"
-            referencedColumns: ["surrogate_submission_id"]
           },
         ]
       }
@@ -138,18 +128,29 @@ export type Database = {
           created_at: string
           question_data: Json
           surrogate_question_id: string
+          surrogate_submission_id: string | null
         }
         Insert: {
           created_at?: string
           question_data: Json
           surrogate_question_id: string
+          surrogate_submission_id?: string | null
         }
         Update: {
           created_at?: string
           question_data?: Json
           surrogate_question_id?: string
+          surrogate_submission_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "questions_surrogate_submission_id_fkey"
+            columns: ["surrogate_submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["surrogate_submission_id"]
+          },
+        ]
       }
       submissions: {
         Row: {
@@ -177,26 +178,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_question_judges_by_queue: {
+      get_question_judge_ids_by_queue: {
+        Args: { queue_id_input: string }
+        Returns: {
+          judge_ids: string[]
+          surrogate_question_id: string
+        }[]
+      }
+      get_questions_by_queue: {
         Args: { queue_id_input: string }
         Returns: {
           created_at: string
-          id: number
-          judge_id: string
-          name: string
-          question_id: string
-          status: Database["public"]["Enums"]["judging_status"]
-          submission_id: string
-        }[]
-      }
-      get_questions_with_judges_by_queue: {
-        Args: { queue_id_input: string }
-        Returns: {
-          judges: Json
           question_data: Json
-          question_id: string
-          submission_id: string
+          surrogate_question_id: string
+          surrogate_submission_id: string | null
         }[]
+        SetofOptions: {
+          from: "*"
+          to: "questions"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
     }
     Enums: {

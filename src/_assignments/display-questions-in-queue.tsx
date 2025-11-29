@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuestionsInQueue } from "./use-questions-in-queue";
-import { useAgents } from "@/_agents/use-agents";
+import { useJudges } from "./use-judges";
 import { AgentCard } from "@/_agents/agent-card";
 import { cn } from "@/lib/utils";
 import {
@@ -31,7 +31,7 @@ export function ManageJudgesPerQuestionInQueue({
   const { data: questions } = useQuestionsInQueue(queueId);
 
   // We should also grab all the potential judges we can assign to these questions.
-  const { data: judges } = useAgents();
+  const { data: judges } = useJudges();
   const { data: questionJudgeIds } = useQuestionJudgeIdsByQueue(queueId);
 
   const addJudgeToQuestion = useAddJudgeIdToQuestion(queueId);

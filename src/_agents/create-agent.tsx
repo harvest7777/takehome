@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { v4 as uuidv4 } from "uuid";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,7 +31,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useCreateAgent } from "./use-agents";
+import { useCreateJudge } from "../_assignments/use-judges";
+import { v4 } from "uuid";
 
 const llmModels: LLMModel[] = [
   "gpt-4o-mini",
@@ -58,7 +58,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function CreateAgentButton() {
   const [open, setOpen] = useState(false);
-  const createAgent = useCreateAgent();
+  const createJudge = useCreateJudge();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -71,15 +71,15 @@ export function CreateAgentButton() {
   });
 
   const onSubmit = (values: FormValues) => {
-    const newAgent: Agent = {
-      id: uuidv4(),
+    const newJudge: Agent = {
+      created_at: new Date().toISOString(),
+      id: v4(),
       name: values.name,
       model: values.model,
       is_active: values.is_active,
       rubric: values.rubric,
-      created_at: new Date().toISOString(),
     };
-    createAgent.mutate(newAgent, {
+    createJudge.mutate(newJudge, {
       onSuccess: () => {
         form.reset();
         setOpen(false);
@@ -198,12 +198,12 @@ export function CreateAgentButton() {
                   form.reset();
                   setOpen(false);
                 }}
-                disabled={createAgent.isPending}
+                disabled={createJudge.isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={createAgent.isPending}>
-                {createAgent.isPending ? "Creating..." : "Create Agent"}
+              <Button type="submit" disabled={createJudge.isPending}>
+                {createJudge.isPending ? "Creating..." : "Create Agent"}
               </Button>
             </DialogFooter>
           </form>

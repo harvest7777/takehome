@@ -1,12 +1,12 @@
 import { AgentCard } from "./agent-card";
-import { useAgents } from "./use-agents";
+import { useJudges } from "../_assignments/use-judges";
 
 interface ViewAgentsProps {
   className?: string;
 }
 
 export function ViewAgents({ className }: ViewAgentsProps) {
-  const { data: agents, isLoading, error } = useAgents();
+  const { data: judges, isLoading, error } = useJudges();
 
   if (isLoading) {
     return (
@@ -30,11 +30,11 @@ export function ViewAgents({ className }: ViewAgentsProps) {
     );
   }
 
-  if (!agents || agents.length === 0) {
+  if (!judges || judges.length === 0) {
     return (
       <div className={className}>
         <div className="text-center py-8">
-          <p className="text-muted-foreground">No agents found.</p>
+          <p className="text-muted-foreground">No judges found.</p>
         </div>
       </div>
     );
@@ -43,8 +43,8 @@ export function ViewAgents({ className }: ViewAgentsProps) {
   return (
     <div className={className}>
       <div className="space-y-4">
-        {agents.map((agent) => (
-          <AgentCard key={agent.id} agent={agent} />
+        {judges.map((judge) => (
+          <AgentCard key={judge.id} agent={judge} />
         ))}
       </div>
     </div>

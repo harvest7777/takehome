@@ -11,17 +11,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useDeleteAgent } from "./use-agents";
+import { useDeleteJudge } from "../_assignments/use-judges";
 
 interface DeleteAgentButtonProps {
   agent: Agent;
 }
 
 export function DeleteAgentButton({ agent }: DeleteAgentButtonProps) {
-  const deleteAgent = useDeleteAgent();
+  const deleteJudge = useDeleteJudge();
 
   const handleDelete = () => {
-    deleteAgent.mutate(agent.id);
+    deleteJudge.mutate(agent.id);
   };
 
   return (
@@ -43,10 +43,10 @@ export function DeleteAgentButton({ agent }: DeleteAgentButtonProps) {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
-            disabled={deleteAgent.isPending}
+            disabled={deleteJudge.isPending}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            {deleteAgent.isPending ? "Deleting..." : "Delete"}
+            {deleteJudge.isPending ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

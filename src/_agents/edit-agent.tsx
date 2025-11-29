@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useUpdateAgent } from "./use-agents";
+import { useUpdateJudge } from "../_assignments/use-judges";
 
 const llmModels: LLMModel[] = [
   "gpt-4o-mini",
@@ -61,7 +61,7 @@ interface EditAgentButtonProps {
 
 export function EditAgentButton({ agent }: EditAgentButtonProps) {
   const [open, setOpen] = useState(false);
-  const updateAgent = useUpdateAgent();
+  const updateJudge = useUpdateJudge();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -86,7 +86,7 @@ export function EditAgentButton({ agent }: EditAgentButtonProps) {
   }, [agent, open, form]);
 
   const onSubmit = (values: FormValues) => {
-    updateAgent.mutate(
+    updateJudge.mutate(
       { id: agent.id, values },
       {
         onSuccess: () => {
@@ -207,12 +207,12 @@ export function EditAgentButton({ agent }: EditAgentButtonProps) {
                   form.reset();
                   setOpen(false);
                 }}
-                disabled={updateAgent.isPending}
+                disabled={updateJudge.isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={updateAgent.isPending}>
-                {updateAgent.isPending ? "Updating..." : "Update Agent"}
+              <Button type="submit" disabled={updateJudge.isPending}>
+                {updateJudge.isPending ? "Updating..." : "Update Agent"}
               </Button>
             </DialogFooter>
           </form>

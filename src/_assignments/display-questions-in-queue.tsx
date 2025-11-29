@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { QuestionCard } from "./question-card";
-import {
-  useAssignJudgeToQuestion,
-  useQuestionsInQueue,
-} from "./use-questions-in-queue";
+import { useQuestionsInQueue } from "./use-questions-in-queue";
 import { useAgents } from "@/_agents/use-agents";
 import { AgentCard } from "@/_agents/agent-card";
 import { cn } from "@/lib/utils";
@@ -16,10 +13,15 @@ export function ManageJudgesPerQuestionInQueue({
   queueId,
 }: ManageJudgesPerQuestionInQueueProps) {
   const [selectedJudgeId, setSelectedJudgeId] = useState<string | null>(null);
-  const { data: questions, isLoading, error } = useQuestionsInQueue(queueId);
-  const { data: judges } = useAgents();
-  const { mutate: assignJudgeToQuestion } = useAssignJudgeToQuestion(queueId);
 
+  // We should grab all the questions in this queue.
+  const { data: questions, isLoading, error } = useQuestionsInQueue(queueId);
+
+  // We should also grab all the potential judges we can assign to these questions.
+  const { data: judges } = useAgents();
+
+  // Get the mutation function from the hook
+  // We'll use this when we want to edit the judges assigned for a question.
   const handleJudgeClick = (judgeId: string) => {
     if (selectedJudgeId === judgeId) {
       // Deselect if clicking the same judge
@@ -31,20 +33,9 @@ export function ManageJudgesPerQuestionInQueue({
   };
 
   const handleQuestionClick = (question: StoredQuestion) => {
-    if (question.assigned_judge_id === selectedJudgeId) {
-      assignJudgeToQuestion({
-        questionId: question.question_id,
-        submissionId: question.submission_id,
-        judgeId: null,
-      });
-    } else {
-      assignJudgeToQuestion({
-        questionId: question.question_id,
-        submissionId: question.submission_id,
-        judgeId: selectedJudgeId,
-      });
-    }
+    console.log("question clicked", question);
   };
+
   if (!queueId) {
     return (
       <div className="p-4">

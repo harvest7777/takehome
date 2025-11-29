@@ -1,11 +1,17 @@
 import { cn } from "@/lib/utils";
+import { useJudgesForQuestion } from "./use-question-judges";
 
 interface QuestionCardProps {
   question: StoredQuestion;
   className?: string;
+  onClick?: () => void;
 }
 
 export function QuestionCard({ question, className }: QuestionCardProps) {
+  const { data: judges, isLoading: isLoadingJudges } = useJudgesForQuestion(
+    question.question_id,
+    question.submission_id
+  );
   // Parse the question_data JSON
   const questionData =
     typeof question.question_data === "string"
@@ -14,25 +20,6 @@ export function QuestionCard({ question, className }: QuestionCardProps) {
 
   const questionText = questionData?.questionText || "No question text";
   const questionType = questionData?.questionType || "Unknown type";
-  // const questionId = questionData?.id || question.question_id;
-
-  // Status badge colors
-  const getStatusColor = (status: JudgingStatus) => {
-    switch (status) {
-      case "QUEUED":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
-      case "RUNNING":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
-      case "COMPLETE":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
-      case "FAILED":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
-      case "CANCELED":
-        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200";
-    }
-  };
 
   return (
     <div className={cn("rounded-lg border bg-card p-4 shadow-sm", className)}>
@@ -61,13 +48,31 @@ export function QuestionCard({ question, className }: QuestionCardProps) {
           </p>
         </div>
       )}
-      {question.assigned_judge_id && (
+      {judges && judges.length > 0 && (
         <div className="mt-3 pt-3 border-t">
           <p className="text-xs text-muted-foreground">
-            Assigned judge: {question.assigned_judge_id}
+            Assigned judges: {judges.map((judge) => judge.name).join(", ")}
           </p>
         </div>
       )}
     </div>
   );
 }
+
+// Status badge colors
+const getStatusColor = (status: JudgingStatus) => {
+  switch (status) {
+    case "QUEUED":
+      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+    case "RUNNING":
+      return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+    case "COMPLETE":
+      return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+    case "FAILED":
+      return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+    case "CANCELED":
+      return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200";
+    default:
+      return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200";
+  }
+};

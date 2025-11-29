@@ -58,8 +58,6 @@ export async function parseQuestionsAndAnswersFromSubmission(submission: Submiss
     const answers = submission['answers'];
     for (const question of questions) {
         const storedQuestion: StoredQuestion = {
-            assigned_judge_id: null,
-            status: null,
             submission_id: submission.id,
             question_id: question['data']['id'],
             question_data: JSON.stringify(question['data']),
@@ -112,3 +110,67 @@ export const jsonStringSubmission = `[
       }
     }
 }]`;
+
+export const jsonStringSubmissionMore = `[
+  {
+    "id": "sub_2",
+    "queueId": "queue_2",
+    "labelingTaskId": "task_2",
+    "createdAt": 1690001230000,
+    "questions": [
+      {
+        "rev": 1,
+        "data": {
+          "id": "q_template_1",
+          "questionType": "single_choice_with_reasoning",
+          "questionText": "Is the sky blue?"
+        }
+      },
+      {
+        "rev": 1,
+        "data": {
+          "id": "q_template_2",
+          "questionType": "free_text",
+          "questionText": "Describe the color of grass."
+        }
+      },
+      {
+        "rev": 2,
+        "data": {
+          "id": "q_template_3",
+          "questionType": "multiple_choice",
+          "questionText": "Select all correct statements about the moon.",
+          "options": [
+            "It has gravity",
+            "It is made of cheese",
+            "It causes tides on Earth",
+            "It is a planet"
+          ]
+        }
+      },
+      {
+        "rev": 1,
+        "data": {
+          "id": "q_template_4",
+          "questionType": "true_false",
+          "questionText": "The Earth is flat."
+        }
+      }
+    ],
+    "answers": {
+      "q_template_1": {
+        "choice": "no",
+        "reasoning": "It varies with conditions."
+      },
+      "q_template_2": {
+        "text": "Grass is green most of the time."
+      },
+      "q_template_3": {
+        "choices": ["It has gravity", "It causes tides on Earth"]
+      },
+      "q_template_4": {
+        "choice": "false"
+      }
+    }
+  }
+]`;

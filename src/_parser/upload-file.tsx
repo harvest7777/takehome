@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { parseInputJson, jsonStringSubmission } from "./parser-helpers";
+import { parseInputJson, jsonStringSubmissionMore } from "./parser-helpers";
 
 export function UploadFileButton() {
   const [open, setOpen] = useState(false);
@@ -19,7 +19,7 @@ export function UploadFileButton() {
   const handleUpload = async () => {
     setIsUploading(true);
     try {
-      await parseInputJson(jsonStringSubmission);
+      await parseInputJson(jsonStringSubmissionMore);
       setOpen(false);
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -50,7 +50,7 @@ export function UploadFileButton() {
         </DialogHeader>
         <div className="py-4">
           <pre className="bg-muted p-4 rounded-md overflow-auto max-h-[400px] text-sm">
-            {jsonStringSubmission}
+            {jsonStringSubmissionMore}
           </pre>
         </div>
         <DialogFooter>

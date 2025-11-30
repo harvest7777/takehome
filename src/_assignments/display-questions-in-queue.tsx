@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Spinner from "@/components/ui/spinner";
 import { useQuestionsInQueue } from "./use-questions-in-queue";
 import { useJudges } from "./use-judges";
 import { AgentCard } from "@/_agents/agent-card";
@@ -28,11 +29,12 @@ export function ManageJudgesPerQuestionInQueue({
   const [selectedJudgeId, setSelectedJudgeId] = useState<string | null>(null);
 
   // We should grab all the questions in this queue.
-  const { data: questions } = useQuestionsInQueue(queueId);
-
+  const { data: questions, isLoading: questionsAreLoading } =
+    useQuestionsInQueue(queueId);
   // We should also grab all the potential judges we can assign to these questions.
-  const { data: judges } = useJudges();
-  const { data: questionJudgeIds } = useQuestionJudgeIdsByQueue(queueId);
+  const { data: judges, isLoading: judgesAreLoading } = useJudges();
+  const { data: questionJudgeIds, isLoading: questionJudgeIdsAreLoading } =
+    useQuestionJudgeIdsByQueue(queueId);
 
   const addJudgeToQuestion = useAddJudgeIdToQuestion(queueId);
   const removeJudgeFromQuestion = useRemoveJudgeIdFromQuestion(queueId);
@@ -70,15 +72,14 @@ export function ManageJudgesPerQuestionInQueue({
     }
   };
 
-  if (!queueId) {
+  const isLoading =
+    questionsAreLoading || judgesAreLoading || questionJudgeIdsAreLoading;
+  if (isLoading)
     return (
-      <div className="p-4">
-        <p className="text-sm text-muted-foreground">
-          Please select a queue to view questions.
-        </p>
+      <div className="w-full flex items-center align-middle justify-center mt-20">
+        <Spinner />
       </div>
     );
-  }
 
   return (
     <div className="space-y-4">

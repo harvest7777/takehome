@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQueues } from "./use-queues";
 import { ManageJudgesPerQuestionInQueue } from "./display-questions-in-queue";
+import Spinner from "@/components/ui/spinner";
 import {
   Select,
   SelectContent,
@@ -11,18 +12,8 @@ import {
 import { Label } from "@/components/ui/label";
 
 export function ContainerAssignJudges() {
-  const { data: queues } = useQueues();
+  const { data: queues, isLoading: queuesAreLoading } = useQueues();
   const [selectedQueue, setSelectedQueue] = useState<string>("");
-
-  if (!queues || queues.length === 0) {
-    return (
-      <div className="p-4">
-        <p className="text-sm text-muted-foreground">
-          No queues found. Upload submissions to create queues.
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4 p-4">
@@ -33,11 +24,19 @@ export function ContainerAssignJudges() {
             <SelectValue placeholder="Choose a queue" />
           </SelectTrigger>
           <SelectContent>
-            {queues.map((queueId) => (
-              <SelectItem key={queueId} value={queueId}>
-                {queueId}
-              </SelectItem>
-            ))}
+            {queuesAreLoading || !queues ? (
+              <div className="p-4 w-full flex items-center align-middle justify-center">
+                <Spinner />
+              </div>
+            ) : (
+              <>
+                {queues.map((queueId) => (
+                  <SelectItem key={queueId} value={queueId}>
+                    {queueId}
+                  </SelectItem>
+                ))}
+              </>
+            )}
           </SelectContent>
         </Select>
       </div>

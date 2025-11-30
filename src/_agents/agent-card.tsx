@@ -13,7 +13,14 @@ export function AgentCard({ agent, className }: AgentCardProps) {
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-base truncate">{agent.name}</h3>
+            <h3
+              className={cn(
+                "font-semibold text-base truncate",
+                agent.is_active ? "opacity-100" : "opacity-50"
+              )}
+            >
+              {agent.name}
+            </h3>
             <div
               className={cn(
                 "rounded-full px-1.5 py-0.5 text-xs font-medium shrink-0",

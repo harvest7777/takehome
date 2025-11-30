@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQueues } from "./use-queues";
-import { ManageJudgesPerQuestionInQueue } from "./display-questions-in-queue";
+import { ManageJudgesPerQuestionInQueue } from "./assign-judges";
 import Spinner from "@/components/ui/spinner";
 import {
   Select,

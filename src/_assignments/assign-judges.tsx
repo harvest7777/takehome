@@ -41,7 +41,11 @@ export function ManageJudgesPerQuestionInQueue({
 
   // Get the mutation function from the hook
   // We'll use this when we want to edit the judges assigned for a question.
-  const handleJudgeClick = (judgeId: string) => {
+  const handleJudgeClick = (judge: StoredJudge) => {
+    if (!judge.is_active) {
+      return;
+    }
+    const judgeId = judge.id;
     if (selectedJudgeId === judgeId) {
       // Deselect if clicking the same judge
       setSelectedJudgeId(null);
@@ -88,7 +92,7 @@ export function ManageJudgesPerQuestionInQueue({
         {judges?.map((judge) => (
           <div
             key={judge.id}
-            onClick={() => handleJudgeClick(judge.id)}
+            onClick={() => handleJudgeClick(judge)}
             className={cn(
               "cursor-pointer transition-all duration-200 rounded-lg",
               selectedJudgeId === judge.id

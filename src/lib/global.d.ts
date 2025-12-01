@@ -6,6 +6,7 @@ type PublicSchema = Database['public']
 declare global {
   type StoredQuestion = PublicSchema['Tables']['questions']['Row']
   type StoredJudge = PublicSchema['Tables']['agent_configurations']['Row']
+  type QuestionJudges = PublicSchema['Tables']['question_judges']['Row']
   type StoredAnswer = PublicSchema['Tables']['answers']['Row']
   type StoredSubmission = PublicSchema['Tables']['submissions']['Row']
   type JudgeEvaluation = PublicSchema['Enums']['judge_evaluation']

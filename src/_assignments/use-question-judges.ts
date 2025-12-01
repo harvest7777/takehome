@@ -57,17 +57,7 @@ async function addJudgeIdToQuestion(
   judgeId: string
 ): Promise<void> {
   // Check if assignment already exists
-  const { data: existing } = await supabase
-    .from("question_judges")
-    .select("id")
-    .eq("surrogate_question_id", surrogateQuestionId)
-    .eq("judge_id", judgeId)
-    .single();
 
-  if (existing) {
-    // Already exists, no need to insert
-    return;
-  }
 
   // Insert new assignment
   const { error } = await supabase.from("question_judges").insert({

@@ -123,6 +123,48 @@ export type Database = {
           },
         ]
       }
+      question_results: {
+        Row: {
+          created_at: string
+          historical_model: string
+          historical_rubric_used: string
+          id: number
+          reference_judge_id: string | null
+          surrogate_question_id: string
+        }
+        Insert: {
+          created_at?: string
+          historical_model: string
+          historical_rubric_used: string
+          id?: number
+          reference_judge_id?: string | null
+          surrogate_question_id: string
+        }
+        Update: {
+          created_at?: string
+          historical_model?: string
+          historical_rubric_used?: string
+          id?: number
+          reference_judge_id?: string | null
+          surrogate_question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_results_reference_judge_id_fkey"
+            columns: ["reference_judge_id"]
+            isOneToOne: false
+            referencedRelation: "agent_configurations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "question_results_surrogate_question_id_fkey"
+            columns: ["surrogate_question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["surrogate_question_id"]
+          },
+        ]
+      }
       questions: {
         Row: {
           created_at: string
@@ -178,6 +220,36 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_next_judges: {
+        Args: { n: number }
+        Returns: {
+          created_at: string
+          judge_id: string | null
+          status: Database["public"]["Enums"]["judging_status"] | null
+          surrogate_question_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "question_judges"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      get_next_questions: {
+        Args: { n: number }
+        Returns: {
+          created_at: string
+          judge_id: string | null
+          status: Database["public"]["Enums"]["judging_status"] | null
+          surrogate_question_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "question_judges"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_question_judge_ids_by_queue: {
         Args: { queue_id_input: string }
         Returns: {

@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { StartJudgingButton } from "@/_judging/start-judging-button";
 
 export function ContainerAssignJudges() {
   const { data: queues, isLoading: queuesAreLoading } = useQueues();
@@ -42,7 +43,10 @@ export function ContainerAssignJudges() {
       </div>
 
       {selectedQueue && (
-        <ManageJudgesPerQuestionInQueue queueId={selectedQueue} />
+        <>
+          <ManageJudgesPerQuestionInQueue queueId={selectedQueue} />
+          <StartJudgingButton currentQueueId={selectedQueue} />
+        </>
       )}
     </div>
   );

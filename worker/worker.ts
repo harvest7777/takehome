@@ -19,6 +19,23 @@ if (!url || !key) {
 
 const supabase = createClient(url, key);
 
+// Sleep function for random delay
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function runJudge(id: number) {
+  // Random delay between 2-5 seconds (2000-5000ms)
+  const delayMs = Math.floor(Math.random() * 3000) + 2000;
+  console.log(`Waiting ${delayMs}ms before marking question_result ${id} as COMPLETE...`);
+  await sleep(delayMs);
+  
+  const {data, error} = await supabase
+    .from("question_results")
+    .update({status: "COMPLETE"})
+    .eq("id", id);
+  console.log(data, error);
+}
 async function start() {
   console.log("Worker started - listening for changes on question_results table...");
 
@@ -27,16 +44,13 @@ async function start() {
     .on(
       "postgres_changes",
       {
-        event: "*", // Listen to INSERT, UPDATE, DELETE
+        event: "INSERT", // Listen to INSERT, UPDATE, DELETE
         schema: "public",
         table: "question_results",
       },
       (payload) => {
-        console.log("📊 Database update detected:");
-        console.log(`  Event: ${payload.eventType}`);
-        console.log(`  Table: ${payload.table}`);
-        console.log(`  Data:`, JSON.stringify(payload.new || payload.old, null, 2));
-        console.log("---");
+        const id = payload.new.id; 
+        runJudge(id);
       }
     )
     .subscribe((status, err) => {
